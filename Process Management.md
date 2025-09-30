@@ -1,3 +1,13 @@
 ## 1. Explain the concept of process creation in operating systems. 
-- A *process* is a program in execution.
-- 
+- A process is a program in execution.
+- A new process is created by an existing process -> parent creates child.
+- The first process in UNIX/Linux is init (PID = 1).
+- Parent process starts execution from main().
+- Child process starts execution from the point where fork() is called.
+- fork() is executed twice: once in parent, once in the child.
+- Return values of fork() :
+  - 0 -> returned to the child process.
+  - Child PID -> returned to the parent process.
+- After creation, the child may call exec() to load and run a new program.
+- Parent may either continue execution in parallel or wait for the child to terminate.
+- OS maintains a Process Control Block (PCB) for each process to track its state, resources, and execution context.
