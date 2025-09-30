@@ -59,3 +59,26 @@ int main()
     return 0;
 }
 ```
+
+## 4. What is the purpose of the wait() system call in process management? 
+- wait() is used by a parent process to wait for its child process to terminate.
+- It ensures that the parent retrieves the child’s exit status.
+- Prevents the creation of zombie processes (terminated child processes that still occupy system resources).
+- If multiple child processes exist, wait() can wait for any one of them to finish.
+- Returns the PID of the terminated child to the parent.
+- If no child has terminated yet, the parent is blocked until a child finishes.
+- wait() is often used in combination with fork() and exec() to ensure proper process synchronization.
+
+## 5. Describe the role of the exec() family of functions in process management.
+- The exec() family of functions is used to run a new program within an existing process.
+- It replaces the current process image (code, data, and stack) with a new program.
+- After a successful exec(), the original program stops executing, and the new program starts.
+- It allows a process to execute a different program without creating a new process.
+- Commonly used in combination with fork():
+  - Parent continues execution.
+  - Child calls exec() to run a new program.
+- Variants include: execl(), execv(), execle(), execve(), execlp(), execvp() – differ in how arguments and environment variables are passed.
+- Returns only if there is an error (otherwise, the new program runs and control never returns).
+- Helps implement features like shell commands execution, where each command runs as a separate program.
+
+## 
