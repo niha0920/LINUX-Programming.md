@@ -146,14 +146,14 @@ Example: If the parent has PID 1000, the child calling getppid() gets 1000.
 ## 9. Explain the concept of process termination in UNIX-like operating systems.
 Process termination means ending the execution of a process and releasing its resources (CPU, memory, file descriptors, etc.) back to the operating system.
 ### Ways a Process Can Terminate
-Normal termination (voluntary):
+#### Normal termination (voluntary):
 - Process finishes execution and calls exit() system call.
 - Example: return 0; in main() implicitly calls exit(0).
-Abnormal termination (voluntary):
+#### Abnormal termination (voluntary):
 - Process detects an error and calls abort() or exit(status != 0).
-Killed by a signal (involuntary):
+#### Killed by a signal (involuntary):
 - Another process or the OS kills it using signals like SIGKILL or SIGTERM.
-Parent termination:
+#### Parent termination:
 - If a parent terminates before its child, the child becomes an orphan and is adopted by init (PID 1).
 
 ## 10. 
