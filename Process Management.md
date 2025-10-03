@@ -14,7 +14,7 @@
 
 ## 2. Differentiate between the fork() and exec() system calls.
 ### fork()
-- fork() is a syatem call used to create a new child process.
+- fork() is a system call used to create a new child process.
 - Allows multitasking by running a new process alongside the parent.
 - Child process copies the memory segments of the parent process; both run independently.
 - fork() returns twice:
