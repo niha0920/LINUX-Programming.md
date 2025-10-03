@@ -128,7 +128,7 @@ int main()
 - Creates a child process without copying the parent's address space (for efficiency). It is meant to be used when the child immediately calls exec() or _exit().
 - Child shares the address space of the parent until it calls exex() or _exit() -> so child must not modify variables or return from the function.
 - Parent is suspended until the child calls exec() or _exit().
-- Faster, as no memory duplication occurs.\
+- Faster, as no memory duplication occurs.
 - Unsafe if child modifies memory before exec() / _exit().
 
 ## 8. Discuss the significance of the getpid() and getppid() system calls.
