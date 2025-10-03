@@ -44,7 +44,7 @@ int main()
     pid = fork();   // Create a child process
     if(pid < 0) 
     {
-        printf("Fork failed.\n");
+        printf("Fork failed\n");
         return 1;
     }
     else if(pid == 0) 
@@ -55,7 +55,7 @@ int main()
     {
         printf("This is the parent process with PID : %d, Child PID : %d\n", getpid(), pid);
     }
-    printf("After fork() - Executing in both parent and child.\n");
+    printf("After fork() - Executing in both parent and child\n");
     return 0;
 }
 ```
@@ -81,4 +81,79 @@ int main()
 - Returns only if there is an error (otherwise, the new program runs and control never returns).
 - Helps implement features like shell commands execution, where each command runs as a separate program.
 
-## 
+## 6. Write a C program to illustrate the use of the execvp() function.
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+int main() 
+{
+    pid_t pid;
+    int status;
+    pid = fork();  // Create a child process
+    if(pid < 0) 
+    {
+        printf("Fork failed\n");
+        return 1;
+    }
+    else if(pid == 0) 
+    {
+        char *args[] = {"ls", "-l", NULL};  // Command and arguments
+        printf("Child process running execvp()\n");
+        // Replace child process with 'ls -l' command
+        if(execvp("ls", args) < 0) 
+        {
+            printf("execvp failed\n");
+        }
+    }
+    else 
+    {
+        // Parent process waits for child to finish
+        wait(&status);
+        printf("Parent process: Child finished execution\n");
+    }
+    return 0;
+}
+```
+
+## 7. How does the vfork() system call differ from fork()?
+### fork() 
+- Creates a new child process with a copy of the parent's address space.
+- Parent and child have separate copies of data, stack, and heap.
+- Parent and child run independently after fork.
+- Slower, since it duplicates the entire process memory (through modern OSs use copy-on-write optimization).
+- Safe to use for general multitasking.
+### vfork()
+- Creates a child process without copying the parent's address space (for efficiency). It is meant to be used when the child immediately calls exec() or _exit().
+- Child shares the address space of the parent until it calls exex() or _exit() -> so child must not modify variables or return from the function.
+- Parent is suspended until the child calls exec() or _exit().
+- Faster, as no memory duplication occurs.\
+- Unsafe if child modifies memory before exec() / _exit().
+
+## 8. Discuss the significance of the getpid() and getppid() system calls.
+### getpid()
+- Returns the process ID (PID) of the calling process.
+- Every process in the system has a unique PID.
+- Useful for identifying processes in logs, debugging, or sending signals (kill(pid, signal)).
+Example: If a process calls getpid() and receives 1234, then its PID is 1234.
+### getppid()
+- Returns the parent process ID (PPID) of the calling process.
+- Helps a child process know who its parent is.
+- If the parent terminates before the child, the child’s PPID becomes 1 (the init process adopts it).
+Example: If the parent has PID 1000, the child calling getppid() gets 1000.
+
+## 9. Explain the concept of process termination in UNIX-like operating systems.
+Process termination means ending the execution of a process and releasing its resources (CPU, memory, file descriptors, etc.) back to the operating system.
+### Ways a Process Can Terminate
+Normal termination (voluntary):
+- Process finishes execution and calls exit() system call.
+- Example: return 0; in main() implicitly calls exit(0).
+Abnormal termination (voluntary):
+- Process detects an error and calls abort() or exit(status != 0).
+Killed by a signal (involuntary):
+- Another process or the OS kills it using signals like SIGKILL or SIGTERM.
+Parent termination:
+- If a parent terminates before its child, the child becomes an orphan and is adopted by init (PID 1).
+
+## 10. 
