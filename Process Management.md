@@ -156,4 +156,28 @@ Process termination means ending the execution of a process and releasing its re
 #### Parent termination:
 - If a parent terminates before its child, the child becomes an orphan and is adopted by init (PID 1).
 
-## 10. 
+## 10. Write a program in C to create a child process using fork() and print its PID.
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+int main() 
+{
+    pid_t pid;
+    pid = fork();
+    if(pid < 0) 
+    {
+        printf("Fork failed.\n");
+        return 1;
+    }
+    else if(pid == 0) 
+    {
+        printf("Child Process: PID = %d\n", getpid());
+    }
+    else 
+    {
+        printf("Parent Process: Created Child with PID = %d\n", pid);
+    }
+    return 0;
+}
+```
