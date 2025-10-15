@@ -219,3 +219,36 @@ void exit(int status);
   - Non-zero → abnormal/error termination
 
 ## 13. Explain how the execve() system call works and provide a code example.
+- execve() is a system call used to execute a new program within the current process.
+- It replaces the current process image with a new program image, meaning the calling process is completely overwritten.
+- It does not create a new process (unlike fork()); instead, it transforms the existing one.
+### Syntax
+int execve(const char *pathname, char *const argv[], char *const envp[]);
+- pathname → Path to the executable file (e.g., /bin/ls)
+- argv[] → Argument list (like command-line arguments), must end with NULL
+- envp[] → List of environment variables, must end with NULL
+### Working of execve()
+- The current process calls execve().
+- The kernel:
+  - Loads the new program into memory.
+  - Replaces the current process’s code, data, and stack with the new program’s image.
+  - Starts executing the new program from its main().
+- If successful, execve() does not return.
+- If it fails (e.g., file not found or permission denied), it returns -1.
+```c
+#include <stdio.h>
+#include <unistd.h>
+int main()
+{
+    char *args[] = {"/bin/ls", "-l", NULL};   // program and arguments
+    char *envp[] = {NULL};   // environment variables
+    printf("Before execve()\n");
+    // Replace current process with 'ls -l' command
+    if(execve("/bin/ls", args, envp) == -1)
+    {
+        perror("execve failed");
+    }
+    printf("This line will not execute if execve succeeds\n");
+    return 0;
+}
+```
