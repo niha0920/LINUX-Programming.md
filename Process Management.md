@@ -197,7 +197,9 @@ int main()
 ### Process Tree Structure
 - The relationship between parent and child processes forms a process tree.
 - You can visualize it using the command:
-  - ps -ef --forest
+  ```c
+  ps -ef --forest
+  ```
 ### Orphan and Zombie Processes
 - If a parent terminates before the child → the child becomes an orphan and is adopted by init.
 - If a child terminates but the parent hasn’t read its exit status → it becomes a zombie (defunct) process.
@@ -213,7 +215,9 @@ int main()
   - Calls functions registered with atexit().
   - Returns a status code to the operating system.
 ### Syntax
+```c
 void exit(int status);
+```
 - status → an integer value returned to the operating system.
   - 0 → successful termination
   - Non-zero → abnormal/error termination
@@ -223,7 +227,9 @@ void exit(int status);
 - It replaces the current process image with a new program image, meaning the calling process is completely overwritten.
 - It does not create a new process (unlike fork()); instead, it transforms the existing one.
 ### Syntax
+```c
 int execve(const char *pathname, char *const argv[], char *const envp[]);
+```
 - pathname → Path to the executable file (e.g., /bin/ls)
 - argv[] → Argument list (like command-line arguments), must end with NULL
 - envp[] → List of environment variables, must end with NULL
