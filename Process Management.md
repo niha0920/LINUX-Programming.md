@@ -181,3 +181,41 @@ int main()
     return 0;
 }
 ```
+
+## 11. Describe the process hierarchy in UNIX-like operating systems.
+- In UNIX-like systems, processes are organized in a hierarchical (tree-like) structure, where each process is created by another process (its parent).
+- This parent–child relationship forms the process hierarchy.
+- The hierarchy ensures process control, resource management, and cleanup (via wait() and exec() mechanisms).
+### Root of the Hierarchy – init / systemd
+- The very first process started by the kernel after booting is init (or systemd in modern systems).
+- It has PID = 1.
+- All other processes are descendants of init.
+### Parent and Child Processes
+- When a process calls the fork() system call, it creates a child process.
+- he parent continues executing, and the child runs a copy of the parent’s program (or a new one via exec()).
+- Every process keeps a record of its Parent Process ID (PPID).
+### Process Tree Structure
+- The relationship between parent and child processes forms a process tree.
+- You can visualize it using the command:
+  - ps -ef --forest
+### Orphan and Zombie Processes
+- If a parent terminates before the child → the child becomes an orphan and is adopted by init.
+- If a child terminates but the parent hasn’t read its exit status → it becomes a zombie (defunct) process.
+
+## 12. What is the purpose of the exit() function in C programming?
+- The exit() function is used to terminate a program normally in C.
+- It is declared in the header file <stdlib.h>.
+### Purpose / Functionality
+- Terminates the program immediately.
+- Performs cleanup operations before termination:
+  - Closes all open files.
+  - Flushes all output buffers.
+  - Calls functions registered with atexit().
+  - Returns a status code to the operating system.
+### Syntax
+void exit(int status);
+- status → an integer value returned to the operating system.
+  - 0 → successful termination
+  - Non-zero → abnormal/error termination
+
+## 13. Explain how the execve() system call works and provide a code example.
