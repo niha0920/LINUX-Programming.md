@@ -258,3 +258,19 @@ int main()
     return 0;
 }
 ```
+
+## 14. Discuss the role of the fork() system call in implementing multitasking.
+- fork() is a system call in UNIX-like operating systems used to create a new process.
+- The new process created is called the child process, and the original is the parent process.
+### Purpose in Multitasking
+- Multitasking means executing multiple processes concurrently.
+- fork() enables multitasking by allowing multiple independent processes to run at the same time.
+- Each process (parent and child) has its own address space, registers, and execution flow, allowing parallel execution.
+### How It Enables Multitasking
+- The parent and child processes can run different tasks simultaneously.
+- The OS scheduler switches between them, giving each process CPU time.
+- Example:
+  - Parent handles user input.
+  - Child performs background computation or I/O.
+
+## 15. Write a C program to create multiple child processes using fork() and display their PIDs.
