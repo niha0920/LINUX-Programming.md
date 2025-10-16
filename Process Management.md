@@ -274,3 +274,53 @@ int main()
   - Child performs background computation or I/O.
 
 ## 15. Write a C program to create multiple child processes using fork() and display their PIDs.
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+int main()
+{
+    pid_t pid;
+    int n;
+    printf("Enter number of child proocesses to create : ");
+    scanf("%d", &n);
+    for(int i = 0; i < n; i++)
+    {
+        pid = fork();
+        if(pid < 0)
+        {
+            printf("Fork failed.\n");
+            return 1;
+        }
+        else if(pid == 0)
+        {
+            printf("Child %d created with PID: %d, Parent PID: %d\n", i + 1, getpid(), getppid());
+            return 0;   // child exits after printing to prevent further forks
+        }
+        // Parent continues the loop to create next child
+    }
+    printf("Parent process (PID: %d) created %d child processes.\n", getpid(), n);   // Only the parent reaches this point after creating all children
+    return 0;
+}
+```
+
+## 16. How does the exec() system call replace the current process image with a new one?
+- The exec() family of system calls (execl(), execv(), execvp(), execve(), etc.) is used to replace the current process image with a new program image.
+- It does not create a new process; instead, it transforms the existing process into a new one.
+### Concept of Process Image
+A process image consists of:
+- Program code (text segment)
+- Data segment (global/static variables)
+- Heap (dynamically allocated memory)
+- Stack (function calls, local variables)
+#### When exec() is called, all these sections are replaced by the new program’s image loaded from the executable file.
+### Working Steps of exec()
+1. The current process calls an exec() function (e.g., execve("/bin/ls", args, envp)).
+2. The kernel performs the following actions:
+- Loads the new executable file into the process’s memory.
+- Erases the old code, data, stack, and heap of the current process.
+- Initializes the new program’s stack, heap, and environment.
+- Sets up the program counter (PC) to point to the new program’s main() function.
+3. After a successful exec(), the new program starts executing immediately.
+- The process ID (PID) remains the same, but the program content changes.
+4. exec() does not return on success — only on failure (returns -1).
