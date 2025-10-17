@@ -386,3 +386,5 @@ int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
 | Threads          |	Creates a separate process |	Can create threads (CLONE_THREAD) |
 | Resource sharing |	Minimal                    |	Customizable via flags            |
 | Portability      |	Standard (POSIX)           |	Linux-specific                    |
+
+## 19. Write a program in C to create a zombie process and explain how to avoid it.
