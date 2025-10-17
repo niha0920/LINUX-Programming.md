@@ -324,3 +324,65 @@ A process image consists of:
 3. After a successful exec(), the new program starts executing immediately.
 - The process ID (PID) remains the same, but the program content changes.
 4. exec() does not return on success — only on failure (returns -1).
+
+## 17. Explain the concept of process scheduling in operating systems.
+- Process scheduling is the activity of the operating system that decides which process runs on the CPU next.
+- It ensures that CPU time is shared efficiently among all processes to achieve maximum CPU utilization, fairness, and responsive multitasking.
+### Purpose of Process Scheduling
+- To maximize CPU utilization (CPU should never be idle).
+- To ensure fairness — every process gets a fair share of CPU time.
+- To provide fast response time for interactive users.
+- To maintain system stability and throughput.
+### Types of Scheduling
+- a) Long-Term Scheduler (Job Scheduler):
+  - Decides which processes should be admitted to the system for execution.
+  - Controls the degree of multiprogramming (number of processes in memory).
+- b) Short-Term Scheduler (CPU Scheduler):
+  - Decides which ready process gets the CPU next.
+  - Runs frequently (milliseconds).
+- c) Medium-Term Scheduler (Swapper):
+  - Temporarily removes processes from memory (swapping) to reduce load and later resumes them.
+### Scheduling Criteria
+- CPU utilization → keep CPU busy as much as possible.
+- Throughput → number of processes completed per unit time.
+- Turnaround time → total time taken to execute a process.
+- Waiting time → total time a process spends waiting in the ready queue.
+- Response time → time from request submission to first response.
+### Scheduling Algorithms
+- First Come First Serve (FCFS): Processes executed in order of arrival.
+- Shortest Job Next (SJN): Shortest process executed first.
+- Round Robin (RR): Each process gets a fixed time slice (quantum).
+- Priority Scheduling: CPU allocated based on priority value.
+- Multilevel Queue Scheduling: Multiple queues for different process types (foreground, background, etc.).
+### Example Scenario
+Suppose three processes arrive:
+- P1 (burst time = 4), P2 (burst = 3), P3 (burst = 2).
+- A Round Robin scheduler with time quantum = 2 will switch between them in order (P1→P2→P3→P1→P2), ensuring fair CPU sharing.
+
+## 18. Describe the role of the clone() system call in process management.
+- clone() is a Linux-specific system call used to create a new process (or thread) similar to fork(), but with more control over what the child process shares with the parent.
+- It is the foundation of thread creation in Linux (used internally by pthread_create()).
+### Purpose
+- To create lightweight processes or threads that can share parts of the execution context (memory, file descriptors, etc.) with the parent process.
+- Provides fine-grained control over resource sharing between parent and child.
+### Syntax
+```c
+int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
+```
+- fn: Function that the child process will execute.
+- child_stack: Pointer to the top of the child’s stack space.
+- flags: Controls what resources are shared between parent and child.
+- arg: Argument passed to the child function.
+### Common Flags
+- CLONE_VM → Parent and child share the same memory space.
+- CLONE_FILES → Share file descriptors.
+- CLONE_FS → Share filesystem information (current directory, root, etc.).
+- CLONE_SIGHAND → Share signal handlers.
+- CLONE_THREAD → Place the child in the same thread group as the parent (used for threads).
+### How It Differs from fork()
+| Feature          |	fork()                     |	clone()                           |
+| ---------------- | --------------------------- | ---------------------------------- |
+| Memory space     |	Separate copy              |	Can share with parent (CLONE_VM)  |
+| Threads          |	Creates a separate process |	Can create threads (CLONE_THREAD) |
+| Resource sharing |	Minimal                    |	Customizable via flags            |
+| Portability      |	Standard (POSIX)           |	Linux-specific                    |
