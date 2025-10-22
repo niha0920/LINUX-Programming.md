@@ -388,3 +388,69 @@ int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
 | Portability      |	Standard (POSIX)           |	Linux-specific                    |
 
 ## 19. Write a program in C to create a zombie process and explain how to avoid it.
+```c
+#include<stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+int main()
+{
+    pid_t pid = fork();
+    if(pid < 0)
+    {
+        perror("fork failed");
+        exit(1);
+    }
+    else if(pid == 0)
+    {
+        printf("Child process running... PID = %d\n", getpid());
+        printf("Child exiting now.\n");
+        exit(0);   // Child terminates immediately
+    }
+    else
+    {
+        printf("Parent process PID = %d\n", getpid());
+        printf("Child process created with PID = %d\n", pid);
+        printf("Parent sleeping for 10 seconds...\n");
+        sleep(10);   // During this time, child becomes zombie
+        printf("Parent exiting now.\n");
+    }
+    return 0;
+}
+```
+### Why Zombie Occurs
+- The parent process does not call wait() or waitpid() to collect the child’s exit status.
+- The kernel keeps the child’s entry in the process table until the parent retrieves the status.
+### How to Avoid a Zombie Process
+- Use wait() or waitpid()
+- Ensure the parent calls wait() to read the child’s exit status.
+
+## 20. Discuss the significance of the setuid() and setgid() system calls in process man
+- setuid() → Sets the User ID (UID) of the calling process.
+- setgid() → Sets the Group ID (GID) of the calling process.
+- These system calls are used to change the effective user or group identity of a process during execution.
+### Purpose
+- They control process privileges and access permissions.
+- Allow a process to temporarily switch user/group identities — typically to perform privileged operations securely.
+- Commonly used in set-user-ID (SUID) and set-group-ID (SGID) programs.
+### Syntax
+```c
+#include <unistd.h>
+int setuid(uid_t uid);
+int setgid(gid_t gid);
+```
+- uid / gid → The new user ID or group ID to assign.
+- Return 0 on success, -1 on failure.
+### How It Works
+- Every process in Linux has three IDs:
+  - Real UID/GID: Original user or group that started the process.
+  - Effective UID/GID: Determines access permissions for files and resources.
+  - Saved UID/GID: Used to temporarily drop and regain privileges.
+- setuid() and setgid() allow a process to change its effective IDs, controlling what resources it can
+### Use Case Example
+- SUID Programs (like passwd):
+  - /usr/bin/passwd is owned by root and has the SUID bit set.
+  - When executed by a normal user, it runs with root privileges (effective UID = 0).
+  - Internally, setuid() ensures the process runs with those elevated privileges temporarily to modify system files like /etc/shadow.
+### Security Aspect
+- setuid() and setgid() help implement privilege separation — allowing only specific tasks to run with higher privileges.
+- Incorrect use can lead to security vulnerabilities (privilege escalation).
