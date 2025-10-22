@@ -445,7 +445,7 @@ int setgid(gid_t gid);
   - Real UID/GID: Original user or group that started the process.
   - Effective UID/GID: Determines access permissions for files and resources.
   - Saved UID/GID: Used to temporarily drop and regain privileges.
-- setuid() and setgid() allow a process to change its effective IDs, controlling what resources it can
+- setuid() and setgid() allow a process to change its effective IDs, controlling what resources it can access.
 ### Use Case Example
 - SUID Programs (like passwd):
   - /usr/bin/passwd is owned by root and has the SUID bit set.
