@@ -454,3 +454,5 @@ int setgid(gid_t gid);
 ### Security Aspect
 - setuid() and setgid() help implement privilege separation — allowing only specific tasks to run with higher privileges.
 - Incorrect use can lead to security vulnerabilities (privilege escalation).
+
+## 21. Explain the concept of process groups and their significance in UNIX-like operating systems.
