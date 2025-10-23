@@ -456,3 +456,24 @@ int setgid(gid_t gid);
 - Incorrect use can lead to security vulnerabilities (privilege escalation).
 
 ## 21. Explain the concept of process groups and their significance in UNIX-like operating systems.
+- A process group is a collection of one or more processes that are related and can be managed together by the operating system.
+- Each process group is identified by a unique Process Group ID (PGID).
+- Typically, a process group is created when a user starts a command in the shell — all related processes of that command belong to the same group.
+## Purpose
+- Process groups are used to control and manage multiple related processes as a single unit.
+- They help in:
+  - Job control (in terminals or shells).
+  - Signal distribution (sending signals like SIGINT, SIGSTOP to all processes in a group).
+  - Foreground and background process management.
+## Structure
+- Each process has:
+  - PID (Process ID): unique identifier of the process.
+  - PGID (Process Group ID): identifier of the process group it belongs to.
+- The first process in the group (usually the process that created others) is the group leader.
+## System Calls Related to Process Groups
+| Function           | Description                                   |
+| ------------------ | --------------------------------------------- |
+| getpgrp()          |	Gets the PGID of the calling pro             |
+| setpgid(pid, pgid) | Sets the PGID for a process.                  |
+| getpgid(pid)       | Gets the PGID of a specified process.         |
+| killpg(pgid, sig)	 | Sends a signal to all processes in the group. |
