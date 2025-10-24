@@ -479,3 +479,45 @@ int setgid(gid_t gid);
 | killpg(pgid, sig)	 | Sends a signal to all processes in the group. |
 
 ## 22. Write a C program to demonstrate the use of the waitpid() function for process synchronization.
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+int main()
+{
+ pid_t pid;
+ int status;
+ pid = fork();
+ if(pid < 0)
+ {
+  perror("fork failed");
+  exit(1);
+ }
+ else if(pid == 0)
+ {
+  printf("Child process started (PID = %d)\n", getpid());
+  sleep(3);
+  printf("Child process completed\n");
+  exit(10);
+ }
+ else
+ {
+  printf("Parent waiting for child (PID = %d)...\n", pid);
+  pid_t ret = waitpid(pid, &status, 0);   // wait for specific child
+  if(ret == -1)
+  {
+   perror("waitpid failed");
+  }
+  else
+  {
+   if(WIFEXITED(status))
+    printf("Child exited normally with status = %d\n", WEXITSTATUS(status));
+  }
+  printf("Parent process finished\n");
+ }
+ return 0;
+}
+```
+
+## 23. Discuss the role of the execle() function in the exec() family of calls.
