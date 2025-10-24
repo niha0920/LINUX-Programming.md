@@ -521,3 +521,36 @@ int main()
 ```
 
 ## 23. Discuss the role of the execle() function in the exec() family of calls.
+- execle() is one of the exec() family functions used to replace the current process image with a new program.
+- It allows the caller to explicitly pass the environment variables to the new program.
+### Syntax
+```c
+int execle(const char *path, const char *arg0, ..., (char *)NULL, char * const envp[]);
+```
+- path: Path of the executable file.
+- arg0, ...: Argument list for the new program (must end with NULL).
+- envp: Array of environment variable strings for the new process.
+### How It Works
+When execle() is called:
+- The current process image is completely replaced by the new program.
+- The process keeps the same PID but runs the new code.
+- The environment for the new program is taken from the envp array (unlike execl() which inherits the parent’s environment).
+
+## 24. Describe the purpose of the nice() system call in process scheduling.
+- The nice() system call is used to change the priority (niceness) of a process in UNIX-like operating systems.
+- It allows a process to voluntarily lower or raise its scheduling priority, influencing how much CPU time it receives compared to other processes.
+### Definition
+```c
+#include <unistd.h>
+int nice(int increment);
+```
+- increment → an integer value added to the process’s current “niceness.”
+- Return value: new nice value on success, -1 on error.
+### How It Works
+- Every process has a nice value that ranges from -20 to +19:
+  - Lower value (-20) → Higher priority (more CPU time).
+  - Higher value (+19) → Lower priority (less CPU time).
+- By default, a process starts with a niceness of 0.
+- Normal users can increase niceness (reduce priority), but only root can decrease it (increase priority).
+
+## 25. Write a program in C to create a daemon process.
