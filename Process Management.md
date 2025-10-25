@@ -613,3 +613,45 @@ int main()
 | PID / Threading  | Creates a new process with a unique PID.                              | Can create a thread within the same process (same PID group).                                  |
 
 ## 28. Write a C program to demonstrate the use of the system() function for executing shell commands.
+```c
+#include<stdio.h>
+#include<stdlib.h>   // For system()
+int main()
+{
+ printf("Executing shell command usnig system()...\n");
+ int ret = system("ls -l");   //Execute 'ls -l' command using system()
+ if(ret == -1)   // Check if the command executed successfully
+  printf("system() call failed\n");
+ else
+  printf("Command executed successfully with return code : %d\n", ret);
+ return 0;
+}
+```
+
+## 29. Explain the concept of process states in UNIX-like operating systems.
+- A process in a UNIX-like operating system goes through several states during its lifetime — from creation to termination.
+- These states represent what the process is currently doing (e.g., running, waiting, or stopped).
+1. New (Created)
+- The process is being created by the system (usually via fork()).
+- It hasn’t yet been admitted to the ready queue.
+- Memory and resources are being allocated.
+2. Ready (Runnable) 
+- The process is loaded into main memory and is ready to run.
+- It is waiting in the ready queue for the CPU scheduler to assign CPU time.
+- Multiple processes may be in this state simultaneously.
+3. Running
+- The process is currently being executed on the CPU.
+- Only one process per CPU core can be in this state at a time.
+- After its time slice expires or it performs I/O, it moves back to Ready or Waiting state.
+4. Waiting (Blocked / Sleeping)
+- The process is waiting for some event to occur (like I/O completion, signal, or resource availability).
+- It is not ready for CPU execution until the event completes.
+5. Terminated (Zombie / Exit)
+- The process has finished execution and exited using exit().
+- However, its entry remains in the process table until the parent collects its status using wait() or waitpid().
+- Such a process is called a zombie process.
+6. Stopped
+- The process is paused or suspended, usually due to a signal (like SIGSTOP or when debugging).
+- It can be resumed later with a SIGCONT signal.
+
+## 30. Describe the purpose of the chroot() system call and provide an example.agement
