@@ -601,13 +601,15 @@ int main()
 ```
 
 ## 27. Discuss the difference between the fork() and clone() system calls.
-| **Feature**          | **`fork()`**                                                              | **`clone()`**                                                                                      |
-| -------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Definition**       | Creates a new **child process** that is a **copy of the parent**.         | Creates a new process or thread with **fine-grained control** over what is shared with the parent. |
-| **Resource Sharing** | Child gets a **separate copy** of parent’s memory, file descriptors, etc. | Child can **share or separate** resources (memory, files, signals) based on flags.                 |
-| **Memory Space**     | Parent and child have **independent memory spaces**.                      | Can share memory space if **CLONE_VM** flag is used.                                               |
-| **Use Case**         | Used to create a **new process** (e.g., running another program).         | Used to create **threads or lightweight processes** in Linux.                                      |
-| **Control Flags**    | No control over sharing — behavior is fixed.                              | Highly flexible using flags like `CLONE_VM`, `CLONE_FILES`, `CLONE_SIGHAND`, `CLONE_THREAD`.       |
-| **Library Usage**    | POSIX-standard system call — portable across UNIX-like systems.           | Linux-specific system call — used internally by `pthread_create()`.                                |
-| **System Overhead**  | Higher overhead due to complete duplication of process resources.         | Lower overhead when resources are shared (e.g., threads).                                          |
-| **PID / Threading**  | Creates a **new process** with a unique PID.                              | Can create a **thread** within the same process (same PID group).                                  |
+| Feature          | fork()                                                                | clone()                                                                                        |
+| ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Definition       | Creates a new child process that is a copy of the parent.             | Creates a new process or thread with fine-grained control over what is shared with the parent. |
+| Resource Sharing | Child gets a separate copy of parent’s memory, file descriptors, etc. | Child can share or separate resources (memory, files, signals) based on flags.                 |
+| Memory Space     | Parent and child have independent memory spaces.                      | Can share memory space if CLONE_VM flag is used.                                               |
+| Use Case         | Used to create a new process (e.g., running another program).         | Used to create threads or lightweight processes in Linux.                                      |
+| Control Flags    | No control over sharing — behavior is fixed.                          | Highly flexible using flags like `CLONE_VM`, `CLONE_FILES`, `CLONE_SIGHAND`, `CLONE_THREAD`.  |
+| Library Usage    | POSIX-standard system call — portable across UNIX-like systems.       | Linux-specific system call — used internally by `pthread_create()`.                            |
+| System Overhead  | Higher overhead due to complete duplication of process resources.     | Lower overhead when resources are shared (e.g., threads).                                      |
+| PID / Threading  | Creates a new process with a unique PID.                              | Can create a thread within the same process (same PID group).                                  |
+
+## 28. Write a C program to demonstrate the use of the system() function for executing shell commands.
