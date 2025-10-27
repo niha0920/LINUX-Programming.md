@@ -768,3 +768,126 @@ int main()
 1. When the parent process terminates, the init process (PID 1) or systemd automatically adopts the orphaned child.
 2. The new parent (`init` or `systemd`) takes responsibility for the child process.
 3. When the orphaned child later finishes execution, `init` calls `wait()` to clean up its resources, preventing it from becoming a zombie process.
+
+## 35. Write a program in C to demonstrate process synchronization using semaphores.
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+#include<semaphore.h>
+#include<fcntl.h>   // For O_CREAT and O_EXCL
+int main()
+{
+ sem_t *sem;
+ sem = sem_open("/mysem", O_CREAT, 0644, 1);   // Create a named semophore with initial value 1
+ if(sem == SEM_FAILED)
+ {
+  perror("sem_open failed");
+  exit(1);
+ }
+ pid_t pid = fork();
+ if(pid < 0)
+ {
+  perror("fork failed");
+  exit(1);
+ }
+ else if(pid == 0)
+ {
+  sem_wait(sem);   // Wait (P operation)
+  printf("Child process entering critical section\n");
+  sleep(2);   // Simulate work
+  printf("Child process leaving critical section\n");
+  sem_post(sem);   // Signal (V operation)
+ }
+ else
+ {
+  sem_wait(sem);
+  printf("Parent process entering critical section\n");
+  sleep(2);
+  printf("Parent process leaving critical section\n");
+  sem_post(sem);
+  wait(NULL);   // Wait for child to finish
+  sem_unlink("/mysem");   // Remove the semophore
+ }
+ return 0;
+}
+```
+
+## 36. Describe the concept of process priority and how it is managed in operating systems.
+- Process priority determines the order in which processes are scheduled for CPU execution.
+- It helps the operating system allocate CPU time fairly and efficiently, ensuring that important tasks get preference over less important ones.
+### What is Process Priority?
+- Each process in the system is assigned a priority value by the OS or user.
+- A higher-priority process gets more CPU time or is scheduled before lower-priority ones.
+- It’s a key part of process scheduling in multitasking systems.
+### Priority Ranges (in UNIX/Linux)
+- Priority values range from -20 to +19.
+  - -20 → Highest priority (more CPU time).
+  - +19 → Lowest priority (less CPU time).
+- Default priority is 0 for normal processes.
+### Managing Process Priority
+#### User-Level Control:
+- The `nice()` system call or `nice` command is used to set process niceness, which indirectly affects priority.
+- Example: `nice -n 10 ./program` (runs program with lower priority).
+#### Kernel-Level Control:
+- The OS scheduler dynamically adjusts priorities based on process behavior (e.g., CPU-bound vs I/O-bound tasks).
+- Real-time processes may have fixed high priorities.
+### Scheduling Based on Priority
+- The CPU scheduler picks the process with the highest priority from the ready queue to execute next.
+- Lower-priority processes may have to wait until higher-priority ones finish or yield the CPU.
+### Commands and System Calls
+| Function/Command | Purpose                               |
+| ---------------- | ------------------------------------- |
+| `nice()`         | Set process priority (niceness value) |
+| `getpriority()`  | Get current priority                  |
+| `setpriority()`  | Change process priority               |
+| `renice`         | Modify priority of a running process  |
+
+## 37. Explain the purpose of the fork() system call in creating copy-on-write (COW) processes.
+- The `fork()` system call is used to create a new process (child process) by duplicating the calling (parent) process.
+- In modern UNIX-like operating systems, this duplication is implemented using a technique called Copy-On-Write (COW) for efficiency.
+### Traditional Behavior
+- Originally, `fork()` created a complete copy of the parent process’s memory (code, data, stack, etc.) for the child.
+- This was inefficient, as often the child immediately replaced its memory using `exec()` (e.g., to run a new program).
+### Copy-On-Write (COW) Optimization
+- With COW, the parent and child share the same physical memory pages after `fork()`.
+- The OS marks these shared pages as read-only.
+- If either process writes to a shared page, only then a private copy of that page is created for the writer.
+- This avoids unnecessary copying and saves memory and time.
+### Working Mechanism
+1. Parent calls `fork()` → child process is created.
+2. Both processes share the same pages initially (read-only).
+3. When either process writes to a page:
+- Page fault occurs.
+- OS duplicates that page for the writing process.
+- Each process now has its own copy (write isolatio
+### Advantages of COW
+- Efficient memory usage — no need to copy memory until modification.
+- Faster `fork()` — only page tables are duplicated, not the full memory.
+- Ideal for `fork()` + `exec()` pattern, where the child soon replaces its memory.
+
+## 38. Discuss the role of the execvp() function in searching for executable files.
+- The `execvp()` function is part of the `exec()` family of system calls used to replace the current process image with a new program.
+- The “vp” in `execvp()` stands for:
+  - v → arguments are passed as a vector (array).
+  - p → the function searches for the executable in the system PATH.
+### Syntax 
+```c
+int execvp(const char *file, char *const argv[]);
+```
+- file: name of the executable or command (e.g., `"ls"`, `"gcc"`).
+- argv: array of argument strings ending with `NULL`.
+### Role in Searching Executables
+- When the `file` argument does not contain a slash (/), `execvp()` automatically searches for the executable file in the directories listed in the `PATH` environment variable.
+- For example, if `PATH` = `/bin:/usr/bin`, and you call:
+```c
+execvp("ls", args);
+```
+→ The system searches `/bin/ls`, `/usr/bin/ls`, etc., until it finds the command.
+- If the `file` contains a slash (e.g., `"./myprog"`), then `execvp()` does not search PATH — it uses the exact path given.
+### On Success / Failure
+- On success → replaces the current process image; does not return.
+- On failure → returns `-1` and sets `errno` (e.g., `ENOENT` if the file is not found).
+
+## 39. 
