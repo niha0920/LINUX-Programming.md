@@ -126,35 +126,35 @@ int main()
 - Safe to use for general multitasking.
 ### vfork()
 - Creates a child process without copying the parent's address space (for efficiency). It is meant to be used when the child immediately calls exec() or _exit().
-- Child shares the address space of the parent until it calls exex() or _exit() -> so child must not modify variables or return from the function.
-- Parent is suspended until the child calls exec() or _exit().
+- Child shares the address space of the parent until it calls `exex()` or `_exit()` -> so child must not modify variables or return from the function.
+- Parent is suspended until the child calls `exec()` or `_exit()`.
 - Faster, as no memory duplication occurs.
-- Unsafe if child modifies memory before exec() / _exit().
+- Unsafe if child modifies memory before `exec()` / `_exit()`.
 
 ## 8. Discuss the significance of the getpid() and getppid() system calls.
 ### getpid()
 - Returns the process ID (PID) of the calling process.
 - Every process in the system has a unique PID.
-- Useful for identifying processes in logs, debugging, or sending signals (kill(pid, signal)).
-Example: If a process calls getpid() and receives 1234, then its PID is 1234.
+- Useful for identifying processes in logs, debugging, or sending signals (`kill(pid, signal)`).
+Example: If a process calls `getpid()` and receives `1234`, then its PID is `1234`.
 ### getppid()
 - Returns the parent process ID (PPID) of the calling process.
 - Helps a child process know who its parent is.
-- If the parent terminates before the child, the child’s PPID becomes 1 (the init process adopts it).
-Example: If the parent has PID 1000, the child calling getppid() gets 1000.
+- If the parent terminates before the child, the child’s PPID becomes `1` (the `init` process adopts it).
+Example: If the parent has PID `1000`, the child calling `getppid()` gets `1000`.
 
 ## 9. Explain the concept of process termination in UNIX-like operating systems.
 Process termination means ending the execution of a process and releasing its resources (CPU, memory, file descriptors, etc.) back to the operating system.
 ### Ways a Process Can Terminate
 #### Normal termination (voluntary):
-- Process finishes execution and calls exit() system call.
-- Example: return 0; in main() implicitly calls exit(0).
+- Process finishes execution and calls `exit()` system call.
+- Example: `return 0;` in `main()` implicitly calls `exit(0)`.
 #### Abnormal termination (voluntary):
-- Process detects an error and calls abort() or exit(status != 0).
+- Process detects an error and calls `abort()` or `exit(status != 0)`.
 #### Killed by a signal (involuntary):
-- Another process or the OS kills it using signals like SIGKILL or SIGTERM.
+- Another process or the OS kills it using signals like `SIGKILL` or `SIGTERM`.
 #### Parent termination:
-- If a parent terminates before its child, the child becomes an orphan and is adopted by init (PID 1).
+- If a parent terminates before its child, the child becomes an orphan and is adopted by `init` (PID 1).
 
 ## 10. Write a program in C to create a child process using fork() and print its PID.
 ```c
@@ -186,13 +186,13 @@ int main()
 - In UNIX-like systems, processes are organized in a hierarchical (tree-like) structure, where each process is created by another process (its parent).
 - This parent–child relationship forms the process hierarchy.
 - The hierarchy ensures process control, resource management, and cleanup (via wait() and exec() mechanisms).
-### Root of the Hierarchy – init / systemd
-- The very first process started by the kernel after booting is init (or systemd in modern systems).
+### Root of the Hierarchy – `init` / `systemd`
+- The very first process started by the kernel after booting is `init` (or `systemd` in modern systems).
 - It has PID = 1.
-- All other processes are descendants of init.
+- All other processes are descendants of `init`.
 ### Parent and Child Processes
-- When a process calls the fork() system call, it creates a child process.
-- he parent continues executing, and the child runs a copy of the parent’s program (or a new one via exec()).
+- When a process calls the `fork()` system call, it creates a child process.
+- he parent continues executing, and the child runs a copy of the parent’s program (or a new one via `exec()`).
 - Every process keeps a record of its Parent Process ID (PPID).
 ### Process Tree Structure
 - The relationship between parent and child processes forms a process tree.
@@ -201,7 +201,7 @@ int main()
   ps -ef --forest
   ```
 ### Orphan and Zombie Processes
-- If a parent terminates before the child → the child becomes an orphan and is adopted by init.
+- If a parent terminates before the child → the child becomes an orphan and is adopted by `init`.
 - If a child terminates but the parent hasn’t read its exit status → it becomes a zombie (defunct) process.
 
 ## 12. What is the purpose of the exit() function in C programming?
@@ -223,24 +223,24 @@ void exit(int status);
   - Non-zero → abnormal/error termination
 
 ## 13. Explain how the execve() system call works and provide a code example.
-- execve() is a system call used to execute a new program within the current process.
+- `execve()` is a system call used to execute a new program within the current process.
 - It replaces the current process image with a new program image, meaning the calling process is completely overwritten.
-- It does not create a new process (unlike fork()); instead, it transforms the existing one.
+- It does not create a new process (unlike `fork()`); instead, it transforms the existing one.
 ### Syntax
 ```c
 int execve(const char *pathname, char *const argv[], char *const envp[]);
 ```
-- pathname → Path to the executable file (e.g., /bin/ls)
-- argv[] → Argument list (like command-line arguments), must end with NULL
-- envp[] → List of environment variables, must end with NULL
+- pathname → Path to the executable file (e.g., `/bin/ls`)
+- argv[] → Argument list (like command-line arguments), must end with `NULL`
+- envp[] → List of environment variables, must end with `NULL`
 ### Working of execve()
-- The current process calls execve().
+- The current process calls `execve()`.
 - The kernel:
   - Loads the new program into memory.
   - Replaces the current process’s code, data, and stack with the new program’s image.
-  - Starts executing the new program from its main().
-- If successful, execve() does not return.
-- If it fails (e.g., file not found or permission denied), it returns -1.
+  - Starts executing the new program from its `main()`.
+- If successful, `execve()` does not return.
+- If it fails (e.g., file not found or permission denied), it returns `-1`.
 ```c
 #include <stdio.h>
 #include <unistd.h>
@@ -260,11 +260,11 @@ int main()
 ```
 
 ## 14. Discuss the role of the fork() system call in implementing multitasking.
-- fork() is a system call in UNIX-like operating systems used to create a new process.
+- `fork()` is a system call in UNIX-like operating systems used to create a new process.
 - The new process created is called the child process, and the original is the parent process.
 ### Purpose in Multitasking
 - Multitasking means executing multiple processes concurrently.
-- fork() enables multitasking by allowing multiple independent processes to run at the same time.
+- `fork()` enables multitasking by allowing multiple independent processes to run at the same time.
 - Each process (parent and child) has its own address space, registers, and execution flow, allowing parallel execution.
 ### How It Enables Multitasking
 - The parent and child processes can run different tasks simultaneously.
@@ -305,7 +305,7 @@ int main()
 ```
 
 ## 16. How does the exec() system call replace the current process image with a new one?
-- The exec() family of system calls (execl(), execv(), execvp(), execve(), etc.) is used to replace the current process image with a new program image.
+- The `exec()` family of system calls (`execl()`, `execv()`, `execvp()`, `execve()`, etc.) is used to replace the current process image with a new program image.
 - It does not create a new process; instead, it transforms the existing process into a new one.
 ### Concept of Process Image
 A process image consists of:
@@ -313,17 +313,17 @@ A process image consists of:
 - Data segment (global/static variables)
 - Heap (dynamically allocated memory)
 - Stack (function calls, local variables)
-#### When exec() is called, all these sections are replaced by the new program’s image loaded from the executable file.
-### Working Steps of exec()
-1. The current process calls an exec() function (e.g., execve("/bin/ls", args, envp)).
+#### When `exec()` is called, all these sections are replaced by the new program’s image loaded from the executable file.
+### Working Steps of `exec()`
+1. The current process calls an `exec()` function (e.g., `execve("/bin/ls", args, envp`)).
 2. The kernel performs the following actions:
 - Loads the new executable file into the process’s memory.
 - Erases the old code, data, stack, and heap of the current process.
 - Initializes the new program’s stack, heap, and environment.
-- Sets up the program counter (PC) to point to the new program’s main() function.
-3. After a successful exec(), the new program starts executing immediately.
+- Sets up the program counter (PC) to point to the new program’s `main()` function.
+3. After a successful `exec()`, the new program starts executing immediately.
 - The process ID (PID) remains the same, but the program content changes.
-4. exec() does not return on success — only on failure (returns -1).
+4. `exec()` does not return on success — only on failure (returns `-1`).
 
 ## 17. Explain the concept of process scheduling in operating systems.
 - Process scheduling is the activity of the operating system that decides which process runs on the CPU next.
@@ -360,8 +360,8 @@ Suppose three processes arrive:
 - A Round Robin scheduler with time quantum = 2 will switch between them in order (P1→P2→P3→P1→P2), ensuring fair CPU sharing.
 
 ## 18. Describe the role of the clone() system call in process management.
-- clone() is a Linux-specific system call used to create a new process (or thread) similar to fork(), but with more control over what the child process shares with the parent.
-- It is the foundation of thread creation in Linux (used internally by pthread_create()).
+- `clone()` is a Linux-specific system call used to create a new process (or thread) similar to `fork()`, but with more control over what the child process shares with the parent.
+- It is the foundation of thread creation in Linux (used internally by `pthread_create()`).
 ### Purpose
 - To create lightweight processes or threads that can share parts of the execution context (memory, file descriptors, etc.) with the parent process.
 - Provides fine-grained control over resource sharing between parent and child.
@@ -380,7 +380,7 @@ int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
 - CLONE_SIGHAND → Share signal handlers.
 - CLONE_THREAD → Place the child in the same thread group as the parent (used for threads).
 ### How It Differs from fork()
-| Feature          |	fork()                     |	clone()                           |
+| Feature          |	`fork()`                   |	`clone()`                         |
 | ---------------- | --------------------------- | ---------------------------------- |
 | Memory space     |	Separate copy              |	Can share with parent (CLONE_VM)  |
 | Threads          |	Creates a separate process |	Can create threads (CLONE_THREAD) |
@@ -418,11 +418,11 @@ int main()
 }
 ```
 ### Why Zombie Occurs
-- The parent process does not call wait() or waitpid() to collect the child’s exit status.
+- The parent process does not call `wait()` or `waitpid()` to collect the child’s exit status.
 - The kernel keeps the child’s entry in the process table until the parent retrieves the status.
 ### How to Avoid a Zombie Process
-- Use wait() or waitpid()
-- Ensure the parent calls wait() to read the child’s exit status.
+- Use `wait()` or `waitpid()`
+- Ensure the parent calls `wait()` to read the child’s exit status.
 
 ## 20. Discuss the significance of the setuid() and setgid() system calls in process man
 - `setuid()` → Sets the User ID (UID) of the calling process.
