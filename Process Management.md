@@ -766,5 +766,5 @@ int main()
 - These child processes become orphans, since their original parent no longer exists.
 ### How UNIX Handles Orphan Processes
 1. When the parent process terminates, the init process (PID 1) or systemd automatically adopts the orphaned child.
-2. The new parent ('init' or 'systemd') takes responsibility for the child process.
-3. When the orphaned child later finishes execution, 'init' calls 'wait()' to clean up its resources, preventing it from becoming a zombie process.
+2. The new parent (`init` or `systemd`) takes responsibility for the child process.
+3. When the orphaned child later finishes execution, `init` calls `wait()` to clean up its resources, preventing it from becoming a zombie process.
