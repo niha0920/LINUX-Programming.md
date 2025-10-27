@@ -425,8 +425,8 @@ int main()
 - Ensure the parent calls wait() to read the child’s exit status.
 
 ## 20. Discuss the significance of the setuid() and setgid() system calls in process man
-- setuid() → Sets the User ID (UID) of the calling process.
-- setgid() → Sets the Group ID (GID) of the calling process.
+- `setuid()` → Sets the User ID (UID) of the calling process.
+- `setgid()` → Sets the Group ID (GID) of the calling process.
 - These system calls are used to change the effective user or group identity of a process during execution.
 ### Purpose
 - They control process privileges and access permissions.
@@ -438,21 +438,21 @@ int main()
 int setuid(uid_t uid);
 int setgid(gid_t gid);
 ```
-- uid / gid → The new user ID or group ID to assign.
+- `uid` / `gid` → The new user ID or group ID to assign.
 - Return 0 on success, -1 on failure.
 ### How It Works
 - Every process in Linux has three IDs:
   - Real UID/GID: Original user or group that started the process.
   - Effective UID/GID: Determines access permissions for files and resources.
   - Saved UID/GID: Used to temporarily drop and regain privileges.
-- setuid() and setgid() allow a process to change its effective IDs, controlling what resources it can access.
+- `setuid()` and `setgid()` allow a process to change its effective IDs, controlling what resources it can access.
 ### Use Case Example
-- SUID Programs (like passwd):
-  - /usr/bin/passwd is owned by root and has the SUID bit set.
+- SUID Programs (like `passwd`):
+  - `/usr/bin/passwd` is owned by root and has the SUID bit set.
   - When executed by a normal user, it runs with root privileges (effective UID = 0).
-  - Internally, setuid() ensures the process runs with those elevated privileges temporarily to modify system files like /etc/shadow.
+  - Internally, `setuid()` ensures the process runs with those elevated privileges temporarily to modify system files like `/etc/shadow`.
 ### Security Aspect
-- setuid() and setgid() help implement privilege separation — allowing only specific tasks to run with higher privileges.
+- `setuid()` and `setgid()` help implement privilege separation — allowing only specific tasks to run with higher privileges.
 - Incorrect use can lead to security vulnerabilities (privilege escalation).
 
 ## 21. Explain the concept of process groups and their significance in UNIX-like operating systems.
@@ -463,7 +463,7 @@ int setgid(gid_t gid);
 - Process groups are used to control and manage multiple related processes as a single unit.
 - They help in:
   - Job control (in terminals or shells).
-  - Signal distribution (sending signals like SIGINT, SIGSTOP to all processes in a group).
+  - Signal distribution (sending signals like `SIGINT`, `SIGSTOP` to all processes in a group).
   - Foreground and background process management.
 ### Structure
 - Each process has:
@@ -471,12 +471,12 @@ int setgid(gid_t gid);
   - PGID (Process Group ID): identifier of the process group it belongs to.
 - The first process in the group (usually the process that created others) is the group leader.
 ### System Calls Related to Process Groups
-| Function           | Description                                   |
-| ------------------ | --------------------------------------------- |
-| getpgrp()          | Gets the PGID of the calling process.         |
-| setpgid(pid, pgid) | Sets the PGID for a process.                  |
-| getpgid(pid)       | Gets the PGID of a specified process.         |
-| killpg(pgid, sig)	 | Sends a signal to all processes in the group. |
+| Function             | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `getpgrp()`          | Gets the PGID of the calling process.         |
+| `setpgid(pid, pgid)` | Sets the PGID for a process.                  |
+| `getpgid(pid)`       | Gets the PGID of a specified process.         |
+| `killpg(pgid, sig)`	 | Sends a signal to all processes in the group. |
 
 ## 22. Write a C program to demonstrate the use of the waitpid() function for process synchronization.
 ```c
@@ -521,20 +521,20 @@ int main()
 ```
 
 ## 23. Discuss the role of the execle() function in the exec() family of calls.
-- execle() is one of the exec() family functions used to replace the current process image with a new program.
+- `execle()` is one of the exec() family functions used to replace the current process image with a new program.
 - It allows the caller to explicitly pass the environment variables to the new program.
 ### Syntax
 ```c
 int execle(const char *path, const char *arg0, ..., (char *)NULL, char * const envp[]);
 ```
 - path: Path of the executable file.
-- arg0, ...: Argument list for the new program (must end with NULL).
+- arg0, ...: Argument list for the new program (must end with `NULL`).
 - envp: Array of environment variable strings for the new process.
 ### How It Works
-When execle() is called:
+When `execle()` is called:
 - The current process image is completely replaced by the new program.
 - The process keeps the same PID but runs the new code.
-- The environment for the new program is taken from the envp array (unlike execl() which inherits the parent’s environment).
+- The environment for the new program is taken from the `envp` array (unlike `execl()` which inherits the parent’s environment).
 
 ## 24. Describe the purpose of the nice() system call in process scheduling.
 - The nice() system call is used to change the priority (niceness) of a process in UNIX-like operating systems.
@@ -601,7 +601,7 @@ int main()
 ```
 
 ## 27. Discuss the difference between the fork() and clone() system calls.
-| Feature          | fork()                                                                | clone()                                                                                        |
+| Feature          | `fork()`                                                              | `clone()`                                                                                      |
 | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Definition       | Creates a new child process that is a copy of the parent.             | Creates a new process or thread with fine-grained control over what is shared with the parent. |
 | Resource Sharing | Child gets a separate copy of parent’s memory, file descriptors, etc. | Child can share or separate resources (memory, files, signals) based on flags.                 |
@@ -632,7 +632,7 @@ int main()
 - A process in a UNIX-like operating system goes through several states during its lifetime — from creation to termination.
 - These states represent what the process is currently doing (e.g., running, waiting, or stopped).
 1. New (Created)
-- The process is being created by the system (usually via fork()).
+- The process is being created by the system (usually via `fork()`).
 - It hasn’t yet been admitted to the ready queue.
 - Memory and resources are being allocated.
 2. Ready (Runnable) 
@@ -647,16 +647,16 @@ int main()
 - The process is waiting for some event to occur (like I/O completion, signal, or resource availability).
 - It is not ready for CPU execution until the event completes.
 5. Terminated (Zombie / Exit)
-- The process has finished execution and exited using exit().
-- However, its entry remains in the process table until the parent collects its status using wait() or waitpid().
+- The process has finished execution and exited using `exit()`.
+- However, its entry remains in the process table until the parent collects its status using `wait()` or `waitpid()`.
 - Such a process is called a zombie process.
 6. Stopped
-- The process is paused or suspended, usually due to a signal (like SIGSTOP or when debugging).
-- It can be resumed later with a SIGCONT signal.
+- The process is paused or suspended, usually due to a signal (like `SIGSTOP` or when debugging).
+- It can be resumed later with a `SIGCONT` signal.
 
 ## 30. Describe the purpose of the chroot() system call and provide an example.agement
-- The chroot() (change root) system call is used to change the root directory (/) for the current running process and its child processes.
-- After calling chroot(), the process cannot access files outside the new root directory, effectively isolating it from the rest of the filesystem.
+- The `chroot()` (change root) system call is used to change the root directory (`/`) for the current running process and its child processes.
+- After calling `chroot()`, the process cannot access files outside the new root directory, effectively isolating it from the rest of the filesystem.
 - It is often used for security isolation, testing, or creating lightweight environments like chroot jails.
 ### Syntax
 ```c
@@ -683,27 +683,27 @@ int main()
 }
 ```
 ### Explanation (Step-by-Step)
-1. chroot("/home/NIHARIKA") — sets /home/NIHARIKA as the new root directory (/).
-2. chdir("/") — moves the current working directory inside the new root.
-3. The process now cannot access files outside /home/NIHARIKA.
-4. system("ls") lists files inside the new root directory only.
+1. `chroot("/home/NIHARIKA")` — sets `/home/NIHARIKA` as the new root directory (`/`).
+2. `chdir("/")` — moves the current working directory inside the new root.
+3. The process now cannot access files outside `/home/NIHARIKA`.
+4. `system("ls")` lists files inside the new root directory only.
 
 ## 31. Discuss the role of the execv() function in the exec() family of calls.
-- The execv() function is part of the exec() family of system calls in UNIX-like operating systems.
+- The `execv()` function is part of the `exec()` family of system calls in UNIX-like operating systems.
 - It is used to replace the current running process image with a new program specified by the given path.
-- After a successful call to execv(), the new program starts execution from its main() function, and the old program ceases to exist in memory.
+- After a successful call to `execv()`, the new program starts execution from its `main()` function, and the old program ceases to exist in memory.
 ### Syntax
 ```c
 #include <unistd.h>
 int execv(const char *path, char *const argv[]);
 ```
-- path: Path to the executable file (e.g., /bin/ls).
-- argv: Argument list — an array of strings ending with NULL.
-- Return value: Only returns -1 if there’s an error (e.g., file not found).
+- path: Path to the executable file (e.g., `/bin/ls`).
+- argv: Argument list — an array of strings ending with `NULL`.
+- Return value: Only returns `-1` if there’s an error (e.g., file not found).
 ####
-- execv() does not return on success — the new program completely replaces the calling process.
+- `execv()` does not return on success — the new program completely replaces the calling process.
 - It does not search the PATH environment variable — you must provide the full executable path.
-- The ‘v’ in execv() stands for “vector”, as it takes arguments in the form of an array (vector).
+- The ‘v’ in `execv()` stands for “vector”, as it takes arguments in the form of an array (vector).
 - Used when arguments are known in advance and PATH search is not needed.
 
 ## 32. Write a C program to create a process using fork() and pass arguments to the child process.
@@ -746,23 +746,23 @@ int main()
 - Each process in the system has a unique PID at any given time.
 - This helps the OS distinguish between multiple processes.
 2. Process Control
-- System calls like kill(), wait(), nice(), and getpriority() use the PID to control or interact with a specific process.
+- System calls like `kill()`, `wait()`, `nice()`, and `getpriority()` use the PID to control or interact with a specific process.
 3. Parent-Child Relationship
-- When a process creates a child using fork(),
+- When a process creates a child using `fork()`,
   - the parent gets the child’s PID.
-  - the child can get its own PID using getpid() and its parent’s PID using getppid().
+  - the child can get its own PID using `getpid()` and its parent’s PID using `getppid()`.
 4. Resource Management
 - The OS maintains a process table, indexed by PIDs, to track each process’s state, memory, and resources.
 5. Process Synchronization
-- The wait() and waitpid() system calls use PIDs to synchronize parent and child processes — ensuring proper termination handling.
+- The `wait()` and `waitpid()` system calls use PIDs to synchronize parent and child processes — ensuring proper termination handling.
 6. Debugging and Monitoring
-- Commands like ps, top, and kill use PIDs to monitor or manage running processes from the user space.
+- Commands like `ps`, `top`, and `kill` use PIDs to monitor or manage running processes from the user space.
 
 ## 34. Discuss the concept of orphan processes and how they are handled in UNIX-like operating systems.
 - An orphan process is a child process whose parent has terminated before the child has finished execution.
 - In simple terms, the parent process dies, but the child process is still running.
 ### Why Orphan Processes Occur
-- When a parent process exits (calls exit()), its child processes may still be executing.
+- When a parent process exits (calls `exit()`), its child processes may still be executing.
 - These child processes become orphans, since their original parent no longer exists.
 ### How UNIX Handles Orphan Processes
 1. When the parent process terminates, the init process (PID 1) or systemd automatically adopts the orphaned child.
