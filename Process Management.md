@@ -655,3 +655,116 @@ int main()
 - It can be resumed later with a SIGCONT signal.
 
 ## 30. Describe the purpose of the chroot() system call and provide an example.agement
+- The chroot() (change root) system call is used to change the root directory (/) for the current running process and its child processes.
+- After calling chroot(), the process cannot access files outside the new root directory, effectively isolating it from the rest of the filesystem.
+- It is often used for security isolation, testing, or creating lightweight environments like chroot jails.
+### Syntax
+```c
+#include <unistd.h>
+int chroot(const char *path);
+```
+- path: The new directory to be treated as the root (/) for the calling process.
+- Returns: 0 on success, -1 on failure.
+```c
+#include<stdio.h>
+#include<unistd.h>
+#include<stdlib.h>
+int main()
+{
+ if(chroot("/home/NIHARIKA") != 0)  // change root directory to /home/NIHARIKA
+ {
+  perror("chroot failed");
+  exit(1);
+ }
+ chdir("/");   // Change working directory to new root
+ printf("Root directory changed successfully!\n");
+ system("ls");   // List files in the new root
+ return 0;
+}
+```
+### Explanation (Step-by-Step)
+1. chroot("/home/NIHARIKA") — sets /home/NIHARIKA as the new root directory (/).
+2. chdir("/") — moves the current working directory inside the new root.
+3. The process now cannot access files outside /home/NIHARIKA.
+4. system("ls") lists files inside the new root directory only.
+
+## 31. Discuss the role of the execv() function in the exec() family of calls.
+- The execv() function is part of the exec() family of system calls in UNIX-like operating systems.
+- It is used to replace the current running process image with a new program specified by the given path.
+- After a successful call to execv(), the new program starts execution from its main() function, and the old program ceases to exist in memory.
+### Syntax
+```c
+#include <unistd.h>
+int execv(const char *path, char *const argv[]);
+```
+- path: Path to the executable file (e.g., /bin/ls).
+- argv: Argument list — an array of strings ending with NULL.
+- Return value: Only returns -1 if there’s an error (e.g., file not found).
+####
+- execv() does not return on success — the new program completely replaces the calling process.
+- It does not search the PATH environment variable — you must provide the full executable path.
+- The ‘v’ in execv() stands for “vector”, as it takes arguments in the form of an array (vector).
+- Used when arguments are known in advance and PATH search is not needed.
+
+## 32. Write a C program to create a process using fork() and pass arguments to the child process.
+```c
+include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+int main()
+{
+ pid_t pid;
+ int status;
+ pid = fork();
+ if(pid < 0)
+ {
+  printf("Fork failed!\n");
+  return 1;
+ }
+ else if(pid == 0)
+ {
+  printf("Child Process:");
+  printf("PID : %d, Parent PID : %d", getpid(), getppid());
+  char *args[] = {"/bin/echo", "Hello", "from", "Child", "Process!", NULL};
+  execv("/bin/echo", args);   // Replace child process with 'echo' command
+  perror("execv failed");   // If execv failed
+ }
+ else
+ {
+  wait(&status);
+  printf("Parent process : Child has finished execution\n");
+ }
+ return 0;
+}
+```
+
+## 33. Explain the significance of process identifiers (PIDs) in process management.
+- A Process Identifier (PID) is a unique numeric ID assigned by the operating system to every running process.
+- It plays a crucial role in tracking, managing, and controlling processes within the system.
+1. Uniqueness
+- Each process in the system has a unique PID at any given time.
+- This helps the OS distinguish between multiple processes.
+2. Process Control
+- System calls like kill(), wait(), nice(), and getpriority() use the PID to control or interact with a specific process.
+3. Parent-Child Relationship
+- When a process creates a child using fork(),
+  - the parent gets the child’s PID.
+  - the child can get its own PID using getpid() and its parent’s PID using getppid().
+4. Resource Management
+- The OS maintains a process table, indexed by PIDs, to track each process’s state, memory, and resources.
+5. Process Synchronization
+- The wait() and waitpid() system calls use PIDs to synchronize parent and child processes — ensuring proper termination handling.
+6. Debugging and Monitoring
+- Commands like ps, top, and kill use PIDs to monitor or manage running processes from the user space.
+
+## 34. Discuss the concept of orphan processes and how they are handled in UNIX-like operating systems.
+- An orphan process is a child process whose parent has terminated before the child has finished execution.
+- In simple terms, the parent process dies, but the child process is still running.
+### Why Orphan Processes Occur
+- When a parent process exits (calls exit()), its child processes may still be executing.
+- These child processes become orphans, since their original parent no longer exists.
+### How UNIX Handles Orphan Processes
+1. When the parent process terminates, the init process (PID 1) or systemd automatically adopts the orphaned child.
+2. The new parent ('init' or 'systemd') takes responsibility for the child process.
+3. When the orphaned child later finishes execution, 'init' calls 'wait()' to clean up its resources, preventing it from becoming a zombie process.
