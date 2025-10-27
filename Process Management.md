@@ -1,36 +1,36 @@
 ## 1. Explain the concept of process creation in operating systems. 
 - A process is a program in execution.
 - A new process is created by an existing process -> parent creates child.
-- The first process in UNIX/Linux is init (PID = 1).
-- Parent process starts execution from main().
-- Child process starts execution from the point where fork() is called.
-- fork() is executed twice: once in parent, once in the child.
-- Return values of fork() :
+- The first process in UNIX/Linux is `init` (PID = 1).
+- Parent process starts execution from `main()`.
+- Child process starts execution from the point where `fork()` is called.
+- `fork()` is executed twice: once in parent, once in the child.
+- Return values of `fork()` :
   - 0 -> returned to the child process.
   - Child PID -> returned to the parent process.
-- After creation, the child may call exec() to load and run a new program.
+- After creation, the child may call `exec()` to load and run a new program.
 - Parent may either continue execution in parallel or wait for the child to terminate.
 - OS maintains a Process Control Block (PCB) for each process to track its state, resources, and execution context.
 
 ## 2. Differentiate between the fork() and exec() system calls.
 ### fork()
-- fork() is a system call used to create a new child process.
+- `fork()` is a system call used to create a new child process.
 - Allows multitasking by running a new process alongside the parent.
 - Child process copies the memory segments of the parent process; both run independently.
-- fork() returns twice:
+- `fork()` returns twice:
   - 0 in the child process
   - child PID in the parent process
 - Child process gets its own unique PID.
 - Parent and child communicate using inter-process communication (IPC) methods like pipes, signals, or shared memory.
-- Commonly used in combination with exec() to run a new program in the child process.
+- Commonly used in combination with `exec()` to run a new program in the child process.
 ### exec()
-- exec() family of system calls is used to run a new program in a process.
+- `exec()` family of system calls is used to run a new program in a process.
 - Replaces the current process image with a different program.
 - Overwrites the process’s memory and code with the new program.
 - Does not return on success; returns -1 only if there is an error.
 - Can pass arguments and environment variables to the new program.
 - Useful for implementing shell commands, where a child process executes a program while the parent continues.
-- Multiple variants exist: execl(), execv(), execle(), execve(), execlp(), execvp() – each with slightly different ways to pass arguments and environment.
+- Multiple variants exist: `execl()`, `execv()`, `execle()`, `execve()`, `execlp()`, `execvp()` – each with slightly different ways to pass arguments and environment.
 
 ## 3. Write a C program to demonstrate the use of fork() system call.
 ```c
@@ -61,23 +61,23 @@ int main()
 ```
 
 ## 4. What is the purpose of the wait() system call in process management? 
-- wait() is used by a parent process to wait for its child process to terminate.
+- `wait()` is used by a parent process to wait for its child process to terminate.
 - It ensures that the parent retrieves the child’s exit status.
 - Prevents the creation of zombie processes (terminated child processes that still occupy system resources).
-- If multiple child processes exist, wait() can wait for any one of them to finish.
+- If multiple child processes exist, `wait()` can wait for any one of them to finish.
 - Returns the PID of the terminated child to the parent.
 - If no child has terminated yet, the parent is blocked until a child finishes.
-- wait() is often used in combination with fork() and exec() to ensure proper process synchronization.
+- `wait()` is often used in combination with fork() and exec() to ensure proper process synchronization.
 
 ## 5. Describe the role of the exec() family of functions in process management.
-- The exec() family of functions is used to run a new program within an existing process.
+- The `exec()` family of functions is used to run a new program within an existing process.
 - It replaces the current process image (code, data, and stack) with a new program.
-- After a successful exec(), the original program stops executing, and the new program starts.
+- After a successful `exec()`, the original program stops executing, and the new program starts.
 - It allows a process to execute a different program without creating a new process.
-- Commonly used in combination with fork():
+- Commonly used in combination with `fork()`:
   - Parent continues execution.
-  - Child calls exec() to run a new program.
-- Variants include: execl(), execv(), execle(), execve(), execlp(), execvp() – differ in how arguments and environment variables are passed.
+  - Child calls `exec()` to run a new program.
+- Variants include: `execl()`, `execv()`, `execle()`, `execve()`, `execlp()`, `execvp()` – differ in how arguments and environment variables are passed.
 - Returns only if there is an error (otherwise, the new program runs and control never returns).
 - Helps implement features like shell commands execution, where each command runs as a separate program.
 
